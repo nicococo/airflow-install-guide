@@ -3,9 +3,6 @@ from airflow import DAG
 from airflow.operators.python import PythonVirtualenvOperator
 
 
-PATH_DAGS = '/home/airflow/gcs/dags/'
-
-
 default_args = {
     'owner': 'nico',
     'retries': 1,
@@ -24,6 +21,7 @@ with DAG(
         import os
         import sys
         import time
+        PATH_DAGS = '/home/airflow/gcs/dags/'
         sys.path.append(f'{PATH_DAGS}airflow-install-guide/dags')
         sys.path.append(f'{PATH_DAGS}airflow-install-guide')
 
