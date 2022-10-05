@@ -41,3 +41,11 @@ Scripts and descriptions on how to install and run a minimum production version 
 		- Create a new linux user
 		- Activate SSH login only for this user (use `ssh-copy-id <user>@<YOUR-IP>`)
 		- Deactivate Password authenification via `/etc/ssh/sshd_config`, set `PasswordAuthentication no`
+
+- Setup Linux Service
+	- Set the correct path in `airflow.service` 
+	- Copy `airflow.service` to `/etc/systemd/system/`
+	- Reload services `sudo systemctl daemon-reload`
+	- Enable service `sudo systemctl enable airflow`
+	- Start the service `sudo systemctl start`
+	- Check service status `systemctl status airflow`
