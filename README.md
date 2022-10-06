@@ -4,6 +4,7 @@
 Scripts and descriptions on how to install and run a minimum production version of airflow on a vps server.
 
 - Get your VPS server up and running (YOUR-IP, root and passwd)
+
 - Install system packages
 	- `apt update`
 	- `apt install postgresql postgresql-contrib`
@@ -41,11 +42,35 @@ Scripts and descriptions on how to install and run a minimum production version 
 		- Create a new linux user
 		- Activate SSH login only for this user (use `ssh-copy-id <user>@<YOUR-IP>`)
 		- Deactivate Password authenification via `/etc/ssh/sshd_config`, set `PasswordAuthentication no`
+	
+	- Add SSL Layer
+		- install OpenSSL and generate key and certficates using the following command
+		`openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 36500 \
+            -nodes \
+            -out airflow.crt \
+            -keyout airflow.key`
+		- web_server_ssl_cert = /home/nicococo/airflow.crt
+		- Find your `airflow.cfg`
+		- Find Section `[webserver]`
+		- Edit `web_server_ssl_cert = /YOUR-PATH/airflow.crt`
+		- Edit `web_server_ssl_key = /YOUR-PATH/airflow.key`
+		- Restart the web server and the URL should change accordingly (you might need to add an
+		exception for your browser for this site)
+
+	- Add secret path
+		- Find your `airflow.cfg`
+		- Find Section `[webserver]`
+		- Edit `base_url = https://YOUR-IP:8080/YOUR-SECRET-PATH`
+		- Restart the web server and the URL should change accordingly
+
 
 - Setup Linux Service
 	- Set the correct path in `airflow.service` 
 	- Copy `airflow.service` to `/etc/systemd/system/`
 	- Reload services `sudo systemctl daemon-reload`
 	- Enable service `sudo systemctl enable airflow`
-	- Start the service `sudo systemctl start`
-	- Check service status `systemctl status airflow`
+	- Start the service `sudo systemctl start airflow`
+	- Check service status `systemctl status airflow` (you can even see memory consumption here)
